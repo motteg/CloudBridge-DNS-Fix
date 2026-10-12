@@ -164,8 +164,10 @@ def buildRclone(abi) {
         doLast {
             def commonEnv = [
                 'GOPATH'      : GOPATH,
-                'GOOS'        : 'linux',
-                'CGO_ENABLED' : '0',
+                'GOOS'        : 'android',
+                'CGO_ENABLED' : '1',
+                'CC'           : getCrossCompiler(abi),
+                'CGO_LDFLAGS'  : '-fuse-ld=lld -s -w',
             ] + abiToEnv[abi]
 
             exec {
@@ -176,7 +178,7 @@ def buildRclone(abi) {
                     'go',
                     'build',
                     '-tags',
-                    'noselfupdate',
+                    'android,noselfupdate',
                     '-trimpath',
                     '-ldflags',
                     ldflags,
